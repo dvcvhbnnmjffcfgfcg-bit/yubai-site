@@ -1,0 +1,1106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>余白 YUBAI · 留一点空白，给真正重要的事</title>
+<meta name="description" content="余白是一款极简的专注与记录应用。安静的计时、每日一问、周回顾，把时间还给你。iOS 与 Android 免费下载。">
+<meta name="theme-color" content="#F7F5F0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="余白 YUBAI · 留一点空白，给真正重要的事">
+<meta property="og:description" content="极简的专注与记录应用。安静的计时、每日一问、周回顾，把时间还给你。">
+<meta property="og:locale" content="zh_CN">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%232F5145'/%3E%3Cpath d='M32 8Q56 25 32 54Q8 25 32 8Z' fill='%23F7F5F0'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --paper:#F7F5F0;
+    --paper-2:#F1EEE6;
+    --ink:#17160F;
+    --ink-2:#2A2820;
+    --muted:#6E6A5F;
+    --muted-2:#918C7F;
+    --line:#E4DFD3;
+    --line-2:#D8D2C4;
+    --accent:#2F5145;
+    --accent-2:#3C6B5A;
+    --accent-soft:#E6EDE6;
+    --warm:#B9693F;
+    --white:#FFFDF9;
+    --radius:20px;
+    --shadow-sm:0 1px 2px rgba(23,22,15,.04), 0 8px 24px -12px rgba(23,22,15,.14);
+    --shadow-md:0 2px 6px rgba(23,22,15,.05), 0 26px 60px -28px rgba(23,22,15,.28);
+    --ease:cubic-bezier(.2,.7,.2,1);
+    --max:1160px;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Inter","PingFang SC","HarmonyOS Sans SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.68; letter-spacing:.01em;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.028;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:multiply;
+  }
+  img,svg{display:block; max-width:100%}
+  a{color:inherit; text-decoration:none}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
+  h1,h2,h3,h4,p{margin:0}
+  ::selection{background:var(--accent); color:var(--paper)}
+
+  .wrap{width:min(var(--max),calc(100% - 48px)); margin-inline:auto; position:relative; z-index:2}
+  .skip{position:absolute; left:-9999px; top:0; z-index:200; background:var(--ink); color:var(--paper); padding:10px 16px; border-radius:0 0 10px 0}
+  .skip:focus{left:0}
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:60;
+    background:rgba(247,245,240,.72);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    border-bottom:1px solid transparent;
+    transition:border-color .35s var(--ease), background .35s var(--ease);
+  }
+  .nav.is-scrolled{border-bottom-color:var(--line); background:rgba(247,245,240,.9)}
+  .nav-inner{height:70px; display:flex; align-items:center; justify-content:space-between; gap:24px}
+  .brand{display:flex; align-items:center; gap:10px}
+  .brand-mark{width:26px; height:26px; border-radius:7px; background:var(--accent); display:grid; place-items:center; flex:none}
+  .brand-mark svg{width:15px; height:15px}
+  .brand-name{font-size:15px; font-weight:600; letter-spacing:.22em}
+  .brand-sub{font-size:9.5px; letter-spacing:.3em; color:var(--muted-2); margin-left:2px; padding-top:1px}
+  .nav-links{display:flex; align-items:center; gap:34px; font-size:14px; color:var(--muted)}
+  .nav-links a{position:relative; padding:6px 0; transition:color .25s}
+  .nav-links a::after{content:""; position:absolute; left:0; right:0; bottom:0; height:1px; background:var(--ink); transform:scaleX(0); transform-origin:left; transition:transform .35s var(--ease)}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-links a:hover::after{transform:scaleX(1)}
+  .nav-cta{display:flex; align-items:center; gap:10px}
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:9px;
+    height:46px; padding:0 22px; border-radius:999px; font-size:14.5px; font-weight:500;
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease), background .25s, color .25s, border-color .25s;
+    white-space:nowrap;
+  }
+  .btn svg{width:15px; height:15px; flex:none}
+  .btn-primary{background:var(--ink); color:var(--paper); box-shadow:0 10px 24px -14px rgba(23,22,15,.8)}
+  .btn-primary:hover{background:var(--accent); transform:translateY(-2px); box-shadow:0 16px 30px -16px rgba(47,81,69,.9)}
+  .btn-ghost{border:1px solid var(--line-2); color:var(--ink); background:rgba(255,253,249,.4)}
+  .btn-ghost:hover{background:var(--white); border-color:var(--ink); transform:translateY(-2px)}
+  .btn-sm{height:38px; padding:0 16px; font-size:13.5px}
+  .btn-light{background:var(--paper); color:var(--ink)}
+  .btn-light:hover{background:#fff; transform:translateY(-2px)}
+  .btn-outline-light{border:1px solid rgba(247,245,240,.28); color:var(--paper)}
+  .btn-outline-light:hover{border-color:var(--paper); transform:translateY(-2px)}
+
+  .menu-btn{display:none; width:40px; height:40px; border:1px solid var(--line-2); border-radius:12px; place-items:center}
+  .menu-btn span{display:block; width:16px; height:1.5px; background:var(--ink); position:relative; transition:transform .3s var(--ease)}
+  .menu-btn span::before,.menu-btn span::after{content:""; position:absolute; left:0; width:16px; height:1.5px; background:var(--ink); transition:transform .3s var(--ease), opacity .2s}
+  .menu-btn span::before{top:-5px}
+  .menu-btn span::after{top:5px}
+  .menu-btn[aria-expanded="true"] span{transform:rotate(45deg)}
+  .menu-btn[aria-expanded="true"] span::before{transform:translateY(5px) rotate(-90deg)}
+  .menu-btn[aria-expanded="true"] span::after{opacity:0}
+
+  .mobile-menu{
+    position:fixed; inset:70px 0 auto 0; z-index:55;
+    background:var(--paper); border-bottom:1px solid var(--line);
+    padding:18px 24px 28px; display:none;
+    box-shadow:0 30px 50px -30px rgba(23,22,15,.35);
+  }
+  .mobile-menu.is-open{display:block; animation:slideDown .35s var(--ease)}
+  @keyframes slideDown{from{opacity:0; transform:translateY(-8px)}to{opacity:1; transform:none}}
+  .mobile-menu a{display:block; padding:14px 0; border-bottom:1px solid var(--line); font-size:17px}
+  .mobile-menu a.btn{display:flex; align-items:center; justify-content:center; width:100%; margin-top:18px; padding:0 22px; border-bottom:0; color:var(--paper); font-size:15px}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative; padding:clamp(48px,7vw,88px) 0 clamp(56px,7vw,92px); overflow:hidden}
+  .hero::after{
+    content:""; position:absolute; width:760px; height:760px; right:-260px; top:-220px; z-index:0;
+    background:radial-gradient(closest-side,rgba(60,107,90,.16),rgba(60,107,90,.05) 55%,transparent 72%);
+    pointer-events:none;
+  }
+  .hero-grid{display:grid; grid-template-columns:1.02fr .98fr; gap:56px; align-items:center}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; height:30px; padding:0 12px 0 10px;
+    border:1px solid var(--line-2); border-radius:999px; background:rgba(255,253,249,.7);
+    font-size:12px; color:var(--muted); letter-spacing:.04em;
+  }
+  .dot{width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px rgba(47,81,69,.12)}
+  .hero h1{
+    margin-top:22px;
+    font-size:clamp(38px,5.2vw,66px); line-height:1.1; letter-spacing:-.035em; font-weight:600;
+  }
+  .hero h1 .soft{color:var(--muted-2)}
+  .mark{position:relative; display:inline-block; z-index:0; white-space:nowrap}
+  .mark::after{
+    content:""; position:absolute; left:-1.5%; right:-1.5%; bottom:-1%; height:44%; z-index:-1;
+    background:linear-gradient(90deg,rgba(185,105,63,.26),rgba(185,105,63,.15));
+    border-radius:3px 8px 5px 3px; transform:rotate(-.7deg);
+  }
+  .hero-sub{margin-top:24px; font-size:clamp(15.5px,1.35vw,17.5px); color:var(--muted); max-width:31em; line-height:1.85}
+  .hero-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:34px}
+  .hero-note{display:flex; align-items:center; gap:12px; margin-top:22px; font-size:12.5px; color:var(--muted-2)}
+  .stars{display:inline-flex; gap:2px; color:var(--warm)}
+  .stars svg{width:12px; height:12px}
+  .hero-note .sep{width:1px; height:12px; background:var(--line-2)}
+
+  .hero-visual{position:relative; display:grid; place-items:center; min-height:590px}
+  .phone{
+    position:relative; z-index:3; width:268px;
+    transform:rotate(-2.4deg);
+    transition:transform .7s var(--ease);
+  }
+  .hero-visual:hover .phone{transform:rotate(-.6deg) translateY(-6px)}
+  .phone-frame{
+    position:relative; padding:9px; border-radius:46px; background:#1B1A14;
+    box-shadow:0 2px 4px rgba(23,22,15,.3), 0 40px 70px -30px rgba(23,22,15,.55), inset 0 0 0 1px rgba(255,255,255,.08);
+  }
+  .phone-screen{
+    position:relative; border-radius:38px; overflow:hidden; background:#FBFAF5;
+    padding:12px 16px 0; height:552px; display:flex; flex-direction:column;
+  }
+  .p-notch{position:absolute; top:8px; left:50%; transform:translateX(-50%); width:74px; height:18px; border-radius:999px; background:#1B1A14; z-index:5}
+  .p-status{display:flex; align-items:center; justify-content:space-between; font-size:10.5px; font-weight:600; letter-spacing:.02em; padding:4px 4px 0; color:var(--ink)}
+  .p-sig{display:flex; align-items:flex-end; gap:1.5px}
+  .p-sig i{display:block; width:2.5px; background:var(--ink); border-radius:1px}
+  .p-sig i:nth-child(1){height:4px}.p-sig i:nth-child(2){height:6px}.p-sig i:nth-child(3){height:8px}
+  .p-bat{width:16px; height:8px; border:1px solid rgba(23,22,15,.5); border-radius:2.5px; position:relative; margin-left:4px}
+  .p-bat::before{content:""; position:absolute; inset:1.5px; right:4px; background:var(--ink); border-radius:1px}
+  .p-head{display:flex; align-items:center; justify-content:space-between; margin-top:16px}
+  .p-date{font-size:10.5px; color:var(--muted-2); letter-spacing:.06em}
+  .p-avatar{width:24px; height:24px; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-size:10px; display:grid; place-items:center; font-weight:600}
+  .p-greet{margin-top:8px; font-size:16.5px; line-height:1.5; font-weight:600; letter-spacing:-.01em}
+  .p-focus{display:grid; place-items:center; margin-top:14px}
+  .p-ring{
+    width:150px; height:150px; border-radius:50%; padding:9px;
+    background:conic-gradient(var(--accent) 0 68%, #E7E3D8 68% 100%);
+    transform:rotate(-90deg);
+    position:relative;
+  }
+  .p-ring::after{content:""; position:absolute; inset:0; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(47,81,69,.06)}
+  .p-ring-inner{
+    width:100%; height:100%; border-radius:50%; background:#FBFAF5; display:grid; place-content:center; text-align:center;
+    transform:rotate(90deg); gap:2px;
+  }
+  .p-time{font-size:26px; font-weight:600; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+  .p-label{font-size:9.5px; color:var(--muted-2); letter-spacing:.14em}
+  .p-tasks{margin-top:16px; display:grid; gap:2px}
+  .p-task{display:flex; align-items:center; gap:9px; padding:9px 2px; border-bottom:1px solid #EDE9DE; font-size:11.5px; color:var(--ink-2)}
+  .p-task:last-child{border-bottom:0}
+  .p-check{width:13px; height:13px; border-radius:4px; border:1px solid var(--line-2); flex:none; display:grid; place-items:center}
+  .p-task.done{color:var(--muted-2); text-decoration:line-through; text-decoration-color:var(--line-2)}
+  .p-task.done .p-check{background:var(--accent); border-color:var(--accent)}
+  .p-task.done .p-check::after{content:""; width:5px; height:3px; border-left:1.2px solid #fff; border-bottom:1.2px solid #fff; transform:rotate(-45deg) translateY(-.5px)}
+  .p-tabbar{margin-top:auto; display:flex; justify-content:space-around; padding:12px 0 14px; border-top:1px solid #EDE9DE}
+  .p-tabbar span{width:18px; height:18px; border-radius:6px; border:1.4px solid #D9D4C6}
+  .p-tabbar span.on{background:var(--accent); border-color:var(--accent)}
+
+  .float-card{
+    position:absolute; z-index:4; background:rgba(255,253,249,.94); backdrop-filter:blur(8px);
+    border:1px solid var(--line); border-radius:16px; padding:14px 16px;
+    box-shadow:var(--shadow-md);
+  }
+  .fc-1{left:-6px; top:74px; animation:floaty 7s ease-in-out infinite}
+  .fc-2{right:0; bottom:96px; animation:floaty 8s ease-in-out infinite .8s}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .fc-label{font-size:10px; color:var(--muted-2); letter-spacing:.1em}
+  .fc-value{font-size:19px; font-weight:600; letter-spacing:-.02em; margin-top:2px; font-variant-numeric:tabular-nums}
+  .fc-value small{font-size:11px; font-weight:400; color:var(--muted-2); margin-left:2px}
+  .fc-bars{display:flex; align-items:flex-end; gap:3px; height:26px; margin-top:10px}
+  .fc-bars i{width:5px; border-radius:2px; background:var(--accent-soft)}
+  .fc-bars i.on{background:var(--accent)}
+  .fc-dots{display:flex; gap:4px; margin-top:10px}
+  .fc-dots i{width:7px; height:7px; border-radius:50%; background:var(--accent)}
+  .fc-dots i.off{background:var(--line-2)}
+
+  /* ---------- stats ---------- */
+  .stats{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(255,253,249,.35)}
+  .stats-grid{display:grid; grid-template-columns:repeat(4,1fr)}
+  .stat{padding:26px 24px; border-right:1px solid var(--line)}
+  .stat:first-child{padding-left:0}
+  .stat:last-child{border-right:0}
+  .stat-num{font-size:clamp(24px,2.6vw,32px); font-weight:600; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+  .stat-label{font-size:12.5px; color:var(--muted-2); margin-top:2px; letter-spacing:.02em}
+
+  /* ---------- section ---------- */
+  .section{padding:clamp(64px,9vw,120px) 0}
+  section[id]{scroll-margin-top:86px}
+  .section-head{max-width:640px}
+  .kicker{display:flex; align-items:center; gap:10px; font-size:11.5px; letter-spacing:.22em; color:var(--muted-2); text-transform:uppercase}
+  .kicker::before{content:""; width:22px; height:1px; background:var(--line-2)}
+  .section-head h2{margin-top:16px; font-size:clamp(28px,3.6vw,44px); line-height:1.24; letter-spacing:-.03em; font-weight:600}
+  .section-head p{margin-top:16px; color:var(--muted); font-size:16px; max-width:34em}
+
+  /* ---------- features ---------- */
+  .bento{display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin-top:52px}
+  .card{
+    position:relative; background:var(--white); border:1px solid var(--line); border-radius:var(--radius);
+    padding:28px; overflow:hidden;
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease), border-color .45s var(--ease);
+  }
+  .card:hover{transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--line-2)}
+  .card h3{font-size:17px; font-weight:600; letter-spacing:-.01em}
+  .card p{margin-top:8px; font-size:13.8px; color:var(--muted); line-height:1.75}
+  .card-icon{width:34px; height:34px; border-radius:10px; background:var(--accent-soft); color:var(--accent); display:grid; place-items:center; margin-bottom:18px}
+  .card-icon svg{width:17px; height:17px}
+  .c-4{grid-column:span 4}
+  .c-2{grid-column:span 2}
+  .c-3{grid-column:span 3}
+  .c-6{grid-column:span 6}
+  .card-split{display:grid; grid-template-columns:1fr .9fr; gap:24px; align-items:center}
+
+  .mini-ring{
+    width:132px; height:132px; border-radius:50%; padding:8px; justify-self:end;
+    background:conic-gradient(var(--accent) 0 72%, #E9E5DA 72% 100%);
+    transform:rotate(-90deg);
+  }
+  .mini-ring div{width:100%; height:100%; border-radius:50%; background:var(--white); display:grid; place-content:center; transform:rotate(90deg); text-align:center}
+  .mini-ring strong{font-size:23px; letter-spacing:-.03em; font-weight:600}
+  .mini-ring span{font-size:9px; letter-spacing:.14em; color:var(--muted-2)}
+
+  .quote-bubble{
+    margin-top:20px; background:var(--paper); border:1px solid var(--line); border-radius:12px 12px 12px 3px;
+    padding:14px 15px; font-size:12.5px; color:var(--ink-2); line-height:1.7;
+  }
+  .quote-bubble span{display:block; margin-top:8px; font-size:10.5px; color:var(--muted-2); letter-spacing:.06em}
+
+  .bars{display:flex; align-items:flex-end; gap:8px; height:76px; margin-top:20px}
+  .bars i{flex:1; border-radius:4px 4px 2px 2px; background:var(--accent-soft); position:relative; transition:background .3s}
+  .bars i.on{background:var(--accent)}
+  .bars-x{display:flex; gap:8px; margin-top:8px; font-size:9.5px; color:var(--muted-2); letter-spacing:.06em}
+  .bars-x span{flex:1; text-align:center}
+
+  .tag-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:18px}
+  .tag{font-size:11px; padding:5px 10px; border-radius:999px; border:1px solid var(--line); color:var(--muted); background:var(--paper)}
+
+  .devices{display:flex; align-items:center; justify-content:center; gap:8px; margin-top:4px}
+  .dev{background:var(--paper); border:1px solid var(--line-2); padding:4px; box-shadow:0 10px 22px -16px rgba(23,22,15,.45); flex:none}
+  .dev-phone{width:48px; height:86px; border-radius:12px; padding:5px}
+  .dev-tablet{width:70px; height:94px; border-radius:11px; padding:5px}
+  .dev-screen{width:100%; height:100%; background:#fff; border-radius:6px; padding:5px; display:flex; flex-direction:column; gap:3.5px; overflow:hidden}
+  .dev-line{display:block; height:2.5px; width:100%; border-radius:2px; background:#E9E4D8}
+  .dev-line.w40{width:40%}
+  .dev-line.w60{width:60%}
+  .dev-line.w80{width:80%}
+  .dev-line.acc{background:var(--accent); opacity:.55}
+  .dev-ring{width:15px; height:15px; border-radius:50%; border:2px solid var(--accent); border-right-color:#E9E4D8; border-bottom-color:#E9E4D8; margin:3px auto 4px; transform:rotate(-30deg)}
+  .dev-laptop{background:none; border:0; box-shadow:none; padding:0; display:flex; flex-direction:column; align-items:center; width:102px}
+  .dev-lid{width:100%; height:62px; background:var(--paper); border:1px solid var(--line-2); border-radius:7px 7px 2px 2px; padding:5px; box-shadow:0 10px 22px -16px rgba(23,22,15,.45)}
+  .dev-base{width:114%; height:5px; background:linear-gradient(180deg,#DFD9CB,#CFC8B7); border-radius:1px 1px 5px 5px; margin-top:2px}
+  .dev-link{width:16px; height:1px; flex:none; background-image:linear-gradient(90deg,var(--line-2) 50%,transparent 0); background-size:4px 1px}
+
+  /* ---------- dark ---------- */
+  .dark{background:#15170F; color:#F3F0E8; position:relative; overflow:hidden}
+  .dark::before{
+    content:""; position:absolute; width:640px; height:640px; left:-200px; bottom:-320px;
+    background:radial-gradient(closest-side,rgba(60,107,90,.4),transparent 70%);
+  }
+  .dark .wrap{position:relative}
+  .dark .kicker{color:#8C8A7B}
+  .dark .kicker::before{background:#3A3B2E}
+  .dark .section-head p{color:#A6A392}
+  .dark-grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:64px; margin-top:0}
+  .dark h2{color:#F3F0E8}
+  .timeline{margin-top:8px}
+  .tl-item{display:grid; grid-template-columns:64px 1fr; gap:16px; padding:26px 0; border-top:1px solid rgba(243,240,232,.13)}
+  .tl-item:first-child{border-top:0; padding-top:0}
+  .tl-num{font-size:11.5px; color:#7E7C6D; letter-spacing:.14em; padding-top:4px; font-variant-numeric:tabular-nums}
+  .tl-item h3{font-size:16.5px; font-weight:500; color:#F3F0E8; letter-spacing:-.01em}
+  .tl-item p{margin-top:6px; font-size:13.8px; color:#A6A392; line-height:1.8}
+  .tl-time{display:inline-block; margin-top:10px; font-size:11px; color:#8FA695; letter-spacing:.1em; border:1px solid rgba(143,166,149,.3); border-radius:999px; padding:3px 10px}
+  .dark-quote{margin-top:40px; padding:22px 24px; border-left:2px solid var(--accent-2); background:rgba(243,240,232,.04); border-radius:0 10px 10px 0}
+  .dark-quote p{font-size:14.5px; color:#DCD8CB; line-height:1.85}
+  .dark-quote span{display:block; margin-top:10px; font-size:11.5px; color:#8C8A7B; letter-spacing:.08em}
+
+  /* ---------- pricing ---------- */
+  .billing{display:inline-flex; padding:4px; border:1px solid var(--line); border-radius:999px; background:var(--white); margin-top:28px; position:relative}
+  .bill-btn{height:34px; padding:0 18px; border-radius:999px; font-size:13px; color:var(--muted); display:inline-flex; align-items:center; gap:7px; transition:color .25s, background .25s}
+  .bill-btn.is-active{background:var(--ink); color:var(--paper)}
+  .save{font-size:10px; padding:2px 6px; border-radius:999px; background:var(--accent-soft); color:var(--accent); letter-spacing:.02em}
+  .bill-btn.is-active .save{background:rgba(247,245,240,.16); color:#D9E5DC}
+  .pricing-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:40px; max-width:900px}
+  .plan{
+    border:1px solid var(--line); border-radius:24px; padding:32px; background:var(--white);
+    display:flex; flex-direction:column; position:relative; transition:transform .4s var(--ease), box-shadow .4s var(--ease);
+  }
+  .plan:hover{transform:translateY(-4px); box-shadow:var(--shadow-md)}
+  .plan.pro{background:var(--accent); color:#F4F1E9; border-color:var(--accent)}
+  .plan-name{font-size:13px; letter-spacing:.16em; color:var(--muted-2); text-transform:uppercase}
+  .plan.pro .plan-name{color:#BFD3C7}
+  .plan-badge{position:absolute; top:26px; right:26px; font-size:10.5px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; background:rgba(244,241,233,.16); color:#E4EDE6}
+  .price-row{display:flex; align-items:baseline; gap:6px; margin-top:18px}
+  .price{font-size:46px; font-weight:600; letter-spacing:-.04em; font-variant-numeric:tabular-nums; line-height:1}
+  .per{font-size:13px; color:var(--muted-2)}
+  .plan.pro .per{color:#BFD3C7}
+  .plan-desc{margin-top:10px; font-size:13.5px; color:var(--muted); line-height:1.7}
+  .plan.pro .plan-desc{color:#C9D9CF}
+  .plan ul{list-style:none; padding:0; margin:24px 0 0; display:grid; gap:11px; font-size:13.8px}
+  .plan li{display:flex; gap:10px; align-items:flex-start; color:var(--ink-2)}
+  .plan.pro li{color:#EAF0EA}
+  .plan li svg{width:15px; height:15px; flex:none; margin-top:4px; color:var(--accent)}
+  .plan.pro li svg{color:#A8C7B5}
+  .plan .btn{margin-top:28px; width:100%}
+  .plan-note{margin-top:12px; font-size:11.5px; color:var(--muted-2); text-align:center}
+  .plan.pro .plan-note{color:#A9C1B2}
+
+  /* ---------- testimonials ---------- */
+  .t-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:48px}
+  .t-card{background:var(--white); border:1px solid var(--line); border-radius:var(--radius); padding:26px; display:flex; flex-direction:column; gap:18px}
+  .t-quote{font-size:14.2px; line-height:1.85; color:var(--ink-2)}
+  .t-person{display:flex; align-items:center; gap:10px; margin-top:auto}
+  .t-avatar{width:34px; height:34px; border-radius:50%; display:grid; place-items:center; font-size:12px; font-weight:600; background:var(--accent-soft); color:var(--accent); flex:none}
+  .t-card:nth-child(2) .t-avatar{background:#F2E4DA; color:var(--warm)}
+  .t-card:nth-child(3) .t-avatar{background:#E8E5D6; color:#7C7346}
+  .t-name{font-size:13px; font-weight:500}
+  .t-role{font-size:11.5px; color:var(--muted-2)}
+  .t-stars{display:flex; gap:2px; color:var(--warm)}
+  .t-stars svg{width:11px; height:11px}
+
+  /* ---------- faq ---------- */
+  .faq-wrap{max-width:820px; margin-top:44px}
+  .faq{border-top:1px solid var(--line)}
+  .faq details{border-bottom:1px solid var(--line)}
+  .faq summary{
+    list-style:none; cursor:pointer; padding:22px 0; display:flex; align-items:center; justify-content:space-between; gap:20px;
+    font-size:15.5px; font-weight:500; transition:color .25s;
+  }
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary:hover{color:var(--accent)}
+  .plus{width:18px; height:18px; position:relative; flex:none}
+  .plus::before,.plus::after{content:""; position:absolute; background:var(--muted); border-radius:1px; transition:transform .35s var(--ease), background .25s}
+  .plus::before{width:12px; height:1.4px; left:3px; top:8.3px}
+  .plus::after{width:1.4px; height:12px; left:8.3px; top:3px}
+  details[open] .plus::after{transform:rotate(90deg); opacity:0}
+  details[open] summary{color:var(--ink)}
+  .faq-a{display:grid; grid-template-rows:0fr; transition:grid-template-rows .38s var(--ease)}
+  details[open] .faq-a{grid-template-rows:1fr}
+  .faq-a > div{overflow:hidden}
+  .faq-a p{padding:0 44px 22px 0; font-size:14px; color:var(--muted); line-height:1.85; max-width:44em}
+
+  /* ---------- download ---------- */
+  .download{padding:0 0 clamp(64px,8vw,100px)}
+  .dl-card{
+    position:relative; overflow:hidden; background:var(--accent); color:#F4F1E9; border-radius:28px;
+    padding:clamp(36px,6vw,68px); display:grid; grid-template-columns:1fr auto; gap:40px; align-items:center;
+  }
+  .dl-card::before{
+    content:""; position:absolute; width:520px; height:520px; right:-140px; top:-240px;
+    background:radial-gradient(closest-side,rgba(255,255,255,.16),transparent 70%);
+  }
+  .dl-card::after{
+    content:""; position:absolute; width:420px; height:420px; left:-180px; bottom:-260px;
+    background:radial-gradient(closest-side,rgba(0,0,0,.22),transparent 70%);
+  }
+  .dl-inner{position:relative; z-index:1}
+  .dl-card h2{font-size:clamp(26px,3.4vw,40px); line-height:1.25; letter-spacing:-.03em; font-weight:600; max-width:15em}
+  .dl-card p{margin-top:14px; color:#C6D8CD; font-size:14.5px; max-width:30em}
+  .dl-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:28px}
+  .dl-meta{margin-top:16px; font-size:11.5px; color:#A9C1B2; letter-spacing:.04em}
+  .dl-icon{position:relative; z-index:1; width:120px; height:120px; border-radius:28px; background:rgba(244,241,233,.1); border:1px solid rgba(244,241,233,.18); display:grid; place-items:center; backdrop-filter:blur(4px)}
+  .dl-icon svg{width:56px; height:56px}
+  .dl-side{position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:12px}
+  .dl-side-note{font-size:11.5px; color:#BFD3C7; letter-spacing:.04em; text-align:center; line-height:1.6}
+  .dl-side-note b{display:block; color:#F4F1E9; font-size:13px; font-weight:500; letter-spacing:.02em}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line); padding:56px 0 28px; background:rgba(255,253,249,.4)}
+  .foot-grid{display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:32px}
+  .foot-brand p{margin-top:14px; font-size:13px; color:var(--muted-2); max-width:20em; line-height:1.8}
+  .foot-col h4{font-size:11.5px; letter-spacing:.16em; color:var(--muted-2); text-transform:uppercase; font-weight:500}
+  .foot-col a{display:block; margin-top:12px; font-size:13.5px; color:var(--muted); transition:color .25s}
+  .foot-col a:hover{color:var(--ink)}
+  .foot-bottom{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:48px; padding-top:20px; border-top:1px solid var(--line); font-size:11.5px; color:var(--muted-2)}
+  .foot-bottom .links{display:flex; gap:20px}
+  .foot-bottom a:hover{color:var(--ink)}
+
+  /* ---------- reveal ---------- */
+  .js .reveal{opacity:0; transform:translateY(20px); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+  .js .reveal.in{opacity:1; transform:none}
+
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1024px){
+    .hero-grid{grid-template-columns:1fr; gap:24px}
+    .hero-visual{min-height:560px; margin-top:20px; width:100%; max-width:480px; margin-inline:auto}
+    .dark-grid{grid-template-columns:1fr; gap:36px}
+    .foot-grid{grid-template-columns:1fr 1fr 1fr}
+    .foot-brand{grid-column:1 / -1}
+  }
+  @media (max-width:880px){
+    .nav-links{display:none}
+    .nav-cta .btn-ghost{display:none}
+    .menu-btn{display:grid}
+    .bento{grid-template-columns:repeat(2,1fr)}
+    .c-4,.c-2,.c-3,.c-6{grid-column:span 2}
+    .card-split{grid-template-columns:1fr}
+    .mini-ring{justify-self:start; margin-top:16px}
+    .pricing-grid{grid-template-columns:1fr; max-width:none}
+    .t-grid{grid-template-columns:1fr}
+    .dl-card{grid-template-columns:1fr; gap:28px}
+    .dl-icon{width:88px; height:88px; border-radius:22px}
+    .dl-icon svg{width:42px; height:42px}
+    .dl-side{flex-direction:row; align-items:center; gap:16px}
+    .dl-side-note{text-align:left}
+  }
+  @media (max-width:640px){
+    .wrap{width:calc(100% - 36px)}
+    .stats-grid{grid-template-columns:1fr 1fr}
+    .stat{padding:20px 16px; border-bottom:1px solid var(--line)}
+    .stat:nth-child(2n){border-right:0}
+    .stat:nth-child(3),.stat:nth-child(4){border-bottom:0}
+    .stat:first-child{padding-left:16px}
+    .hero-visual{min-height:520px}
+    .phone{width:246px}
+    .phone-screen{height:508px}
+    .float-card{display:none}
+    .foot-grid{grid-template-columns:1fr 1fr}
+    .hero-note{flex-wrap:wrap; gap:8px}
+    .hero-note .sep{display:none}
+    .t-grid{gap:10px}
+    .dl-actions .btn{flex:1 1 0; min-width:0; padding:0 10px; font-size:13.5px; gap:7px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important}
+    .js .reveal{opacity:1; transform:none}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要内容</a>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="余白首页">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.8Q19 7.6 12 17.2Q5 7.6 12 2.8Z" fill="#F7F5F0"/></svg>
+      </span>
+      <span class="brand-name">余白</span>
+      <span class="brand-sub">YUBAI</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="#features">功能</a>
+      <a href="#why">为什么</a>
+      <a href="#pricing">价格</a>
+      <a href="#faq">常见问题</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost btn-sm" href="#pricing">查看价格</a>
+      <a class="btn btn-primary btn-sm" href="#download">免费下载</a>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="打开菜单"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#features">功能</a>
+  <a href="#why">为什么是余白</a>
+  <a href="#pricing">价格</a>
+  <a href="#faq">常见问题</a>
+  <a class="btn btn-primary" href="#download">免费下载</a>
+</div>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow reveal"><span class="dot"></span>余白 3.0 · 现已上线</span>
+        <h1 class="reveal" style="transition-delay:.06s">留一点空白，<br>给<span class="mark">真正重要的事</span>。</h1>
+        <p class="hero-sub reveal" style="transition-delay:.12s">余白是一款极简的专注与记录应用。它不催你，也不评价你，只在你需要的时候，安静地把时间还给你。</p>
+        <div class="hero-actions reveal" style="transition-delay:.18s">
+          <a class="btn btn-primary" href="#download">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 20h16"/></svg>
+            免费下载
+          </a>
+          <a class="btn btn-ghost" href="#features">看看它怎么工作</a>
+        </div>
+        <div class="hero-note reveal" style="transition-delay:.24s">
+          <span class="stars" aria-label="4.9 分">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+          </span>
+          <span>4.9 · 来自 3,200+ 条评价</span>
+          <span class="sep"></span>
+          <span>iOS 17+ / Android 9+</span>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal" style="transition-delay:.15s">
+        <div class="float-card fc-1" aria-hidden="true">
+          <div class="fc-label">本周专注</div>
+          <div class="fc-value">6<small>小时</small> 20<small>分</small></div>
+          <div class="fc-bars">
+            <i style="height:38%"></i><i class="on" style="height:62%"></i><i class="on" style="height:48%"></i>
+            <i class="on" style="height:84%"></i><i style="height:30%"></i><i class="on" style="height:70%"></i><i style="height:22%"></i>
+          </div>
+        </div>
+
+        <div class="phone">
+          <div class="phone-frame">
+            <div class="p-notch"></div>
+            <div class="phone-screen">
+              <div class="p-status">
+                <span>9:41</span>
+                <span style="display:flex;align-items:center;gap:5px">
+                  <span class="p-sig"><i></i><i></i><i></i></span>
+                  <span class="p-bat"></span>
+                </span>
+              </div>
+              <div class="p-head">
+                <span class="p-date">10 月 23 日 · 周四</span>
+                <span class="p-avatar">林</span>
+              </div>
+              <h4 class="p-greet">早上好，<br>今天想专注什么？</h4>
+              <div class="p-focus">
+                <div class="p-ring">
+                  <div class="p-ring-inner">
+                    <span class="p-time">25:00</span>
+                    <span class="p-label">深度工作</span>
+                  </div>
+                </div>
+              </div>
+              <div class="p-tasks">
+                <div class="p-task done"><span class="p-check"></span><span>读完《慢》第三章</span></div>
+                <div class="p-task"><span class="p-check"></span><span>写周报的开头</span></div>
+                <div class="p-task"><span class="p-check"></span><span>给妈妈打个电话</span></div>
+              </div>
+              <div class="p-tabbar"><span class="on"></span><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="float-card fc-2" aria-hidden="true">
+          <div class="fc-label">连续记录</div>
+          <div class="fc-value">12 <small>天</small></div>
+          <div class="fc-dots">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="off"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="产品数据">
+    <div class="wrap stats-grid">
+      <div class="stat reveal">
+        <div class="stat-num" data-count="120000" data-suffix="+">0</div>
+        <div class="stat-label">位使用者</div>
+      </div>
+      <div class="stat reveal" style="transition-delay:.06s">
+        <div class="stat-num" data-count="4.9" data-decimals="1">0</div>
+        <div class="stat-label">App Store 评分</div>
+      </div>
+      <div class="stat reveal" style="transition-delay:.12s">
+        <div class="stat-num" data-count="47" data-suffix=" 分钟">0</div>
+        <div class="stat-label">日均多出的专注时间</div>
+      </div>
+      <div class="stat reveal" style="transition-delay:.18s">
+        <div class="stat-num">0</div>
+        <div class="stat-label">广告、推送与打扰</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">Features</div>
+        <h2>足够少，才足够专注。</h2>
+        <p>我们没有把功能堆满屏幕。每一个留在余白里的功能，都只回答一个问题：怎样让你更轻松地开始，更安心地停下来。</p>
+      </div>
+
+      <div class="bento">
+        <article class="card c-4 card-split reveal">
+          <div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M9 2h6"/></svg>
+            </div>
+            <h3>一次只做一件事</h3>
+            <p>25 分钟、45 分钟，或一段你自己定义的长度。计时开始后，屏幕只剩下一圈缓慢合拢的弧线——没有排行榜，没有打断。</p>
+          </div>
+          <div class="mini-ring" aria-hidden="true"><div><strong>18:42</strong><span>FOCUS</span></div></div>
+        </article>
+
+        <article class="card c-2 reveal" style="transition-delay:.06s">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>
+          </div>
+          <h3>每日一问</h3>
+          <p>每天一个问题，不要求答案漂亮。</p>
+          <div class="quote-bubble">
+            今天，什么让你停下来多看了一眼？
+            <span>— 10 月 23 日</span>
+          </div>
+        </article>
+
+        <article class="card c-2 reveal" style="transition-delay:.1s">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+          </div>
+          <h3>周回顾</h3>
+          <p>不比较，只呈现。看看这一周，你把时间放在了哪里。</p>
+          <div class="bars" aria-hidden="true">
+            <i style="height:36%"></i><i class="on" style="height:64%"></i><i class="on" style="height:52%"></i>
+            <i class="on" style="height:88%"></i><i style="height:28%"></i><i class="on" style="height:72%"></i><i style="height:18%"></i>
+          </div>
+          <div class="bars-x" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+        </article>
+
+        <article class="card c-2 reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10a4 4 0 0 0-1-7.9A5.5 5.5 0 0 0 6.5 4 4.5 4.5 0 0 0 7 13h11a3 3 0 0 0 0-6Z"/><path d="M3 3l18 18"/></svg>
+          </div>
+          <h3>离线也能记</h3>
+          <p>地铁、飞机、山里的民宿。断网时写下的每一个字，都会在信号回来时自己找到家。</p>
+          <div class="tag-row"><span class="tag">本地优先</span><span class="tag">自动合并</span></div>
+        </article>
+
+        <article class="card c-2 reveal" style="transition-delay:.06s">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          </div>
+          <h3>只属于你</h3>
+          <p>默认只存在你的设备上。开启同步时，内容在你的设备之间端到端加密，我们看不到。</p>
+          <div class="tag-row"><span class="tag">端到端加密</span><span class="tag">可随时导出</span></div>
+        </article>
+
+        <article class="card c-6 reveal" style="transition-delay:.1s">
+          <div class="card-split">
+            <div>
+              <div class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="14" height="10" rx="1.5"/><path d="M6 18h6M9 14v4"/><rect x="17" y="9" width="5" height="11" rx="1.5"/></svg>
+              </div>
+              <h3>所有设备，同一个余白</h3>
+              <p>在手机上开始，在电脑上继续。iPad、iPhone、Android 与桌面端实时同步，你甚至不需要按下保存。</p>
+              <div class="tag-row"><span class="tag">iPhone</span><span class="tag">iPad</span><span class="tag">Android</span><span class="tag">macOS · 即将推出</span></div>
+            </div>
+            <div class="devices" aria-hidden="true">
+              <div class="dev dev-phone">
+                <div class="dev-screen">
+                  <span class="dev-ring"></span>
+                  <b class="dev-line acc"></b>
+                  <b class="dev-line w60"></b>
+                </div>
+              </div>
+              <span class="dev-link"></span>
+              <div class="dev dev-tablet">
+                <div class="dev-screen">
+                  <b class="dev-line w60"></b>
+                  <b class="dev-line"></b>
+                  <b class="dev-line w80"></b>
+                  <b class="dev-line w40 acc"></b>
+                  <b class="dev-line w60"></b>
+                </div>
+              </div>
+              <span class="dev-link"></span>
+              <div class="dev dev-laptop">
+                <div class="dev-lid">
+                  <div class="dev-screen">
+                    <b class="dev-line w40 acc"></b>
+                    <b class="dev-line"></b>
+                    <b class="dev-line w80"></b>
+                    <b class="dev-line w60"></b>
+                  </div>
+                </div>
+                <div class="dev-base"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark" id="why">
+    <div class="wrap">
+      <div class="dark-grid">
+        <div>
+          <div class="section-head reveal">
+            <div class="kicker">A quieter day</div>
+            <h2>把一天，<br>切成几块安静的时间。</h2>
+            <p>不是把日程排得更满，而是留出几段不被打断的空白。余白做的，只是帮你守住它们。</p>
+          </div>
+          <div class="dark-quote reveal">
+            <p>“我们相信，一个人真正的产出，不来自更长的待办清单，而来自几段完整的注意力。”</p>
+            <span>— 余白设计手记，第 01 期</span>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="tl-item reveal">
+            <div class="tl-num">01</div>
+            <div>
+              <h3>醒来之后，先问自己一个问题</h3>
+              <p>不打开信息流。用一句话写下今天最想照顾的事，它会成为这一天唯一的重点。</p>
+              <span class="tl-time">07:20 · 每日一问</span>
+            </div>
+          </div>
+          <div class="tl-item reveal" style="transition-delay:.06s">
+            <div class="tl-num">02</div>
+            <div>
+              <h3>开始一段不被打断的时间</h3>
+              <p>选一个长度，按下开始。通知被安静地收起来，屏幕只剩下呼吸般的光。</p>
+              <span class="tl-time">09:00 · 深度工作 90 分钟</span>
+            </div>
+          </div>
+          <div class="tl-item reveal" style="transition-delay:.12s">
+            <div class="tl-num">03</div>
+            <div>
+              <h3>睡前，把今天放回原位</h3>
+              <p>三行字，记下完成的事、没做的事，以及一句想留给明天的话。然后合上手机。</p>
+              <span class="tl-time">21:40 · 一日回顾</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">Pricing</div>
+        <h2>先免费用，喜欢再付费。</h2>
+        <p>核心的专注与记录永久免费，没有广告，也不限制次数。Pro 只是为需要跨设备与回顾的人，多准备了一点。</p>
+        <div class="billing" role="group" aria-label="计费周期">
+          <button class="bill-btn is-active" data-billing="month" aria-pressed="true">按月</button>
+          <button class="bill-btn" data-billing="year" aria-pressed="false">按年 <span class="save">省 40%</span></button>
+        </div>
+      </div>
+
+      <div class="pricing-grid">
+        <article class="plan reveal">
+          <div class="plan-name">Free</div>
+          <div class="price-row"><span class="price">¥0</span><span class="per">/ 永久</span></div>
+          <p class="plan-desc">给想先安静下来的人。</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>无限次专注计时</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>每日一问与本地记录</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>最近 7 天的记录</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>离线使用</li>
+          </ul>
+          <a class="btn btn-ghost" href="#download">开始使用</a>
+          <div class="plan-note">无需信用卡</div>
+        </article>
+
+        <article class="plan pro reveal" style="transition-delay:.08s">
+          <div class="plan-badge">最受欢迎</div>
+          <div class="plan-name">Pro</div>
+          <div class="price-row">
+            <span class="price" id="proPrice" data-month="18" data-year="128">¥18</span>
+            <span class="per" id="proPer">/ 月</span>
+          </div>
+          <p class="plan-desc" id="proDesc">按月订阅，随时可以取消。</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>包含 Free 的全部功能</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>全部历史记录与搜索</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>跨设备端到端加密同步</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>每周回顾报告</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>Markdown / CSV 一键导出</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>新功能优先体验</li>
+          </ul>
+          <a class="btn btn-light" href="#download">免费试用 14 天</a>
+          <div class="plan-note" id="proNote">试用结束后按 ¥18 / 月续订</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0" id="reviews">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">Stories</div>
+        <h2>他们把余白，留在了生活里。</h2>
+      </div>
+      <div class="t-grid">
+        <article class="t-card reveal">
+          <div class="t-stars" aria-label="5 分">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+          </div>
+          <p class="t-quote">“我试过十几个专注类应用，最后只留下了它。因为它从来不奖励我，也不责怪我没有坚持。它只是在那里。”</p>
+          <div class="t-person">
+            <div class="t-avatar">陈</div>
+            <div><div class="t-name">陈知远</div><div class="t-role">独立开发者</div></div>
+          </div>
+        </article>
+
+        <article class="t-card reveal" style="transition-delay:.06s">
+          <div class="t-stars" aria-label="5 分">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+          </div>
+          <p class="t-quote">“每日一问用了三个月。前几天翻回去看，才发现那段时间我一直在担心同一件事，而它已经过去了。”</p>
+          <div class="t-person">
+            <div class="t-avatar">苏</div>
+            <div><div class="t-name">苏禾</div><div class="t-role">杂志编辑</div></div>
+          </div>
+        </article>
+
+        <article class="t-card reveal" style="transition-delay:.12s">
+          <div class="t-stars" aria-label="5 分">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+          </div>
+          <p class="t-quote">“界面安静得几乎不像一个产品。我打开它，做完事，然后关掉。这大概就是最好的工具该有的样子。”</p>
+          <div class="t-person">
+            <div class="t-avatar">李</div>
+            <div><div class="t-name">李维</div><div class="t-role">产品设计师</div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">FAQ</div>
+        <h2>你可能想问的。</h2>
+      </div>
+      <div class="faq-wrap reveal">
+        <div class="faq">
+          <details open>
+            <summary>余白支持哪些设备？<span class="plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><div><p>目前支持 iOS 17 及以上、Android 9 及以上的手机与平板。macOS 桌面端正在内测，Windows 版本计划在明年上半年推出。购买一次 Pro，所有平台通用。</p></div></div>
+          </details>
+          <details>
+            <summary>免费版有什么限制？<span class="plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><div><p>免费版包含无限次专注计时、每日一问、本地记录与离线使用，没有广告，也不限制使用时长。区别只在于：免费版保留最近 7 天的记录，且不包含跨设备同步与周回顾报告。</p></div></div>
+          </details>
+          <details>
+            <summary>我的记录会保存在哪里？<span class="plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><div><p>默认只保存在你的设备本地。开启同步后，内容会在你的设备之间端到端加密传输，服务器上只有无法解读的密文。我们不会分析你的记录内容，也不会用于任何推荐。</p></div></div>
+          </details>
+          <details>
+            <summary>可以导出我的数据吗？<span class="plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><div><p>可以。Pro 用户支持将全部记录一键导出为 Markdown 或 CSV，包含时间、内容与标签。你随时可以带着自己的数据离开，不需要发邮件申请。</p></div></div>
+          </details>
+          <details>
+            <summary>如何取消订阅？<span class="plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><div><p>在 App Store 或 Google Play 的订阅管理中随时可以取消，取消后仍可使用至当前周期结束。通过官网订阅的用户，可以在账户页一键取消，无需联系客服。</p></div></div>
+          </details>
+          <details>
+            <summary>学生有优惠吗？<span class="plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><div><p>有。使用学校邮箱完成验证后，Pro 年付方案可享 5 折，优惠在学籍有效期内持续有效。如果你所在地区无法验证邮箱，写信给我们，人工也会帮你处理。</p></div></div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="download" id="download">
+    <div class="wrap">
+      <div class="dl-card reveal">
+        <div class="dl-inner">
+          <h2>从今天，留一点空白。</h2>
+          <p>免费下载，无需注册即可开始。你的第一条记录，只需要十秒钟。</p>
+          <div class="dl-actions">
+            <a class="btn btn-light" href="#download" aria-label="在 App Store 下载（链接待替换）">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.7c0-2.4 2-3.6 2.1-3.6-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.6.9-.8 0-1.9-.9-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.7c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.6-1-2.6-3.8ZM14 5.6c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.5 2.8-1.3Z"/></svg>
+              App Store
+            </a>
+            <a class="btn btn-outline-light" href="#download" aria-label="在 Google Play 下载（链接待替换）">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.3 14 12 3.6 21.7c-.4-.2-.6-.6-.6-1.1V3.4c0-.5.2-.9.6-1.1Zm11.6 10.9 2.7 2.6-9.2 5.2 6.5-7.8Zm0-2.4L8.7 3 17.9 8.2l-2.7 2.6Zm3.9 1.2 2.4 1.4c.7.4.7 1.2 0 1.6l-2.4 1.4-2.9-2.2 2.9-2.2Z"/></svg>
+              Google Play
+            </a>
+          </div>
+          <div class="dl-meta">iOS 17+ · Android 9+ ｜ 免费，无广告 ｜ 支持 iPhone / iPad / Android</div>
+        </div>
+        <div class="dl-side">
+          <div class="dl-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none">
+              <path d="M32 7Q62 26 32 55Q2 26 32 7Z" fill="#F7F5F0"/>
+              <path d="M32 30v20" stroke="#2F5145" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M32 40c-4-.5-6.6-2.6-7.6-6M32 46.5c4-.5 6.6-2.6 7.6-6" stroke="#2F5145" stroke-width="1.3" stroke-linecap="round" opacity=".5"/>
+            </svg>
+          </div>
+          <div class="dl-side-note"><b>4.9 ★ · 12 万+ 次下载</b>App Store 编辑推荐</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.8Q19 7.6 12 17.2Q5 7.6 12 2.8Z" fill="#F7F5F0"/></svg>
+          </span>
+          <span class="brand-name">余白</span>
+          <span class="brand-sub">YUBAI</span>
+        </a>
+        <p>一款极简的专注与记录应用。<br>留一点空白，给真正重要的事。</p>
+      </div>
+      <div class="foot-col">
+        <h4>产品</h4>
+        <a href="#features">功能</a>
+        <a href="#pricing">价格</a>
+        <a href="#download">下载</a>
+      </div>
+      <div class="foot-col">
+        <h4>支持</h4>
+        <a href="#faq">常见问题</a>
+        <a href="mailto:hello@yubai.app">联系我们</a>
+        <a href="#reviews">用户故事</a>
+      </div>
+      <div class="foot-col">
+        <h4>关于</h4>
+        <a href="#why">设计手记</a>
+        <a href="legal.html#privacy">隐私政策</a>
+        <a href="legal.html#terms">服务条款</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year">2026</span> 余白工作室 · 保留所有权利</span>
+      <div class="links">
+        <a href="legal.html#privacy">隐私</a>
+        <a href="legal.html#terms">条款</a>
+        <a href="mailto:hello@yubai.app">hello@yubai.app</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.documentElement.classList.add('js');
+
+  // 年份
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // 导航滚动状态
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // 移动端菜单
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', () => {
+    const open = menuBtn.getAttribute('aria-expanded') === 'true';
+    menuBtn.setAttribute('aria-expanded', String(!open));
+    mobileMenu.classList.toggle('is-open', !open);
+  });
+  const closeMenu = () => {
+    menuBtn.setAttribute('aria-expanded', 'false');
+    mobileMenu.classList.remove('is-open');
+  };
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 880) closeMenu(); });
+
+  // 滚动入场
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealEls = document.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    revealEls.forEach(el => el.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => io.observe(el));
+  }
+
+  // 数字滚动
+  const counters = document.querySelectorAll('[data-count]');
+  const fmt = (n, d) => d ? n.toFixed(d) : Math.round(n).toLocaleString('en-US');
+  const runCount = (el) => {
+    const target = parseFloat(el.dataset.count);
+    const dec = parseInt(el.dataset.decimals || '0', 10);
+    const suffix = el.dataset.suffix || '';
+    if (reduce) { el.textContent = fmt(target, dec) + suffix; return; }
+    const dur = 1400; const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(target * eased, dec) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  if ('IntersectionObserver' in window) {
+    const co = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { runCount(e.target); co.unobserve(e.target); } });
+    }, { threshold: 0.6 });
+    counters.forEach(c => co.observe(c));
+  } else {
+    counters.forEach(runCount);
+  }
+
+  // 价格切换
+  const billBtns = document.querySelectorAll('.bill-btn');
+  const proPrice = document.getElementById('proPrice');
+  const proPer = document.getElementById('proPer');
+  const proDesc = document.getElementById('proDesc');
+  const proNote = document.getElementById('proNote');
+  billBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      billBtns.forEach(b => { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', 'true');
+      const mode = btn.dataset.billing;
+      proPrice.textContent = '¥' + proPrice.dataset[mode];
+      if (mode === 'year') {
+        proPer.textContent = '/ 年';
+        proDesc.textContent = '按年订阅，相当于每月 ¥10.7。';
+        proNote.textContent = '试用结束后按 ¥128 / 年续订';
+      } else {
+        proPer.textContent = '/ 月';
+        proDesc.textContent = '按月订阅，随时可以取消。';
+        proNote.textContent = '试用结束后按 ¥18 / 月续订';
+      }
+    });
+  });
+
+  // FAQ：同时只展开一个
+  const faqs = document.querySelectorAll('.faq details');
+  faqs.forEach(d => d.addEventListener('toggle', () => {
+    if (d.open) faqs.forEach(o => { if (o !== d) o.open = false; });
+  }));
+
+  // 鼠标轻微视差
+  const visual = document.querySelector('.hero-visual');
+  if (visual && !reduce && window.matchMedia('(hover:hover)').matches) {
+    const phone = visual.querySelector('.phone');
+    const f1 = visual.querySelector('.fc-1');
+    const f2 = visual.querySelector('.fc-2');
+    visual.addEventListener('pointermove', (e) => {
+      const r = visual.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      phone.style.transform = `rotate(${-2.4 + x * 2.2}deg) translate(${x * 8}px, ${y * 8}px)`;
+      if (f1) f1.style.transform = `translate(${x * -14}px, ${y * -10}px)`;
+      if (f2) f2.style.transform = `translate(${x * -20}px, ${y * -12}px)`;
+    });
+    visual.addEventListener('pointerleave', () => {
+      phone.style.transform = '';
+      if (f1) f1.style.transform = '';
+      if (f2) f2.style.transform = '';
+    });
+  }
+</script>
+</body>
+</html>
